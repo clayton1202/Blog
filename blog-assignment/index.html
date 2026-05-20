@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ls1and's Rift Chronicles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           CSS CUSTOM PROPERTIES — RUNETERRA DARK THEME
+           ============================================= */
+        :root {
+            --gold:      #C89B3C;
+            --gold-light:#F0E6C8;
+            --gold-dim:  #7A5C1E;
+            --blue:      #0BC4E3;
+            --blue-dim:  #0A3A4A;
+            --red:       #C0392B;
+            --dark:      #010A13;
+            --dark-mid:  #0A1628;
+            --dark-card: #091321;
+            --panel:     #0D1C2E;
+            --border:    rgba(200,155,60,0.35);
+            --text:      #A8B4C0;
+            --text-light:#D8E2EC;
+        }
+
+        /* =============================================
+           RESET & BASE
+           ============================================= */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 18px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Runeterra hex-grid background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(11,196,227,0.07) 0%, transparent 60%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpolygon points='28,2 54,16 54,44 28,58 2,44 2,16' fill='none' stroke='rgba(200,155,60,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 56px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* =============================================
+           HEADER
+           ============================================= */
+        /* Main site header with banner background */
+        header {
+            position: relative;
+            background:
+                linear-gradient(180deg, rgba(1,10,19,0) 0%, rgba(1,10,19,0.7) 60%, var(--dark) 100%),
+                linear-gradient(135deg, #010A13 0%, #0A1628 40%, #0D1C2E 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        /* Decorative golden lines across header */
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 119px,
+                    rgba(200,155,60,0.04) 120px
+                );
+            pointer-events: none;
+        }
+
+        /* Top navigation bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 2.5rem;
+            border-bottom: 1px solid rgba(200,155,60,0.15);
+            background: rgba(1,10,19,0.6);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Site logo / brand */
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        /* Main navigation links */
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2.2rem;
+        }
+
+        nav ul li a {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover { color: var(--gold-light); }
+        nav ul li a:hover::after { width: 100%; }
+
+        /* Hero banner inside header */
+        .hero {
+            padding: 5rem 2.5rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Decorative rune circle behind hero title */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(11,196,227,0.05) 0%, transparent 70%);
+            border: 1px solid rgba(200,155,60,0.08);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--blue);
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+            opacity: 0.85;
+        }
+
+        /* Main site title */
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.4rem, 5vw, 4.2rem);
+            font-weight: 900;
+            color: var(--gold-light);
+            line-height: 1.08;
+            letter-spacing: 0.04em;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 60px rgba(200,155,60,0.3), 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text);
+            max-width: 520px;
+            margin: 0 auto 2rem;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        /* Rank badge in hero */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: linear-gradient(135deg, rgba(200,155,60,0.12), rgba(11,196,227,0.08));
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 0.5rem 1.2rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            color: var(--gold);
+        }
+
+        .rank-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--blue);
+            box-shadow: 0 0 8px var(--blue);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--blue); }
+            50%       { opacity: 0.5; box-shadow: 0 0 3px var(--blue); }
+        }
+
+        /* Decorative divider line with diamond */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3rem 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .divider-gem {
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            box-shadow: 0 0 12px rgba(200,155,60,0.4);
+            flex-shrink: 0;
+        }
+
+        /* =============================================
+           LAYOUT: MAIN + SIDEBAR
+           ============================================= */
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* =============================================
+           SECTION TITLES
+           ============================================= */
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        /* =============================================
+           BLOG ARTICLES
+           ============================================= */
+        /* Each blog post card */
+        article {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        article:hover {
+            border-color: rgba(200,155,60,0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Top accent line on articles */
+        article::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        article:hover::before { opacity: 1; }
+
+        /* Featured image placeholder inside article */
+        .article-img {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--blue-dim) 0%, var(--dark-mid) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .article-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.75;
+        }
+
+        /* Champion splash art placeholder SVG */
+        .art-placeholder {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            opacity: 0.15;
+            color: var(--gold);
+            user-select: none;
+        }
+
+        /* Category tag overlay on image */
+        .article-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+        }
+
+        /* Text content inside article */
+        .article-body {
+            padding: 1.8rem 2rem 2rem;
+        }
+
+        /* Article metadata: date and author */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .article-meta time,
+        .article-meta .author {
+            font-family: 'Cinzel', serif;
+            font-size: 0.64rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        .article-meta .sep {
+            width: 4px;
+            height: 4px;
+            background: var(--gold-dim);
+            transform: rotate(45deg);
+            opacity: 0.5;
+        }
+
+        /* Article heading */
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            line-height: 1.25;
+            margin-bottom: 0.9rem;
+            letter-spacing: 0.01em;
+        }
+
+        h2 a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        h2 a:hover { color: var(--gold); }
+
+        /* Article excerpt paragraph */
+        .article-excerpt {
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.75;
+            margin-bottom: 1.4rem;
+        }
+
+        /* Read more link */
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.68rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--blue);
+            text-decoration: none;
+            transition: color 0.2s, gap 0.2s;
+        }
+
+        .read-more:hover { color: var(--gold); gap: 0.8rem; }
+
+        .read-more::after { content: '→'; }
+
+        /* Blockquote inside featured post */
+        blockquote {
+            border-left: 3px solid var(--gold);
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            background: rgba(200,155,60,0.05);
+            font-style: italic;
+            color: var(--gold-light);
+            font-size: 1.05rem;
+        }
+
+        blockquote strong { font-style: normal; color: var(--gold); }
+
+        /* =============================================
+           SIDEBAR / ASIDE
+           ============================================= */
+        aside {
+            position: sticky;
+            top: 80px;
+        }
+
+        /* Individual sidebar section */
+        .sidebar-section {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .sidebar-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+        }
+
+        /* Sidebar heading */
+        h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.2rem;
+        }
+
+        /* About me section */
+        .about-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue-dim), var(--dark-mid));
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 20px rgba(200,155,60,0.2);
+        }
+
+        .about-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .about-rank {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--blue);
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .about-bio {
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: var(--text);
+            text-align: center;
+        }
+
+        /* Stats grid in about section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+        }
+
+        .stat-box {
+            background: rgba(200,155,60,0.06);
+            border: 1px solid rgba(200,155,60,0.2);
+            padding: 0.7rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            color: var(--text);
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* Recent posts list in sidebar */
+        .recent-list {
+            list-style: none;
+        }
+
+        .recent-list li {
+            border-bottom: 1px solid rgba(200,155,60,0.1);
+            padding: 0.7rem 0;
+        }
+
+        .recent-list li:last-child { border-bottom: none; }
+
+        .recent-list li a {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .recent-list li a:hover { color: var(--gold); }
+
+        .recent-list li time {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        /* Categories tag cloud */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .cat-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid var(--border);
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .cat-tag:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+
+        /* Champion spotlight in sidebar */
+        .champ-card {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(200,155,60,0.1);
+        }
+
+        .champ-card:last-child { border-bottom: none; }
+
+        .champ-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--gold-dim);
+            background: var(--dark-mid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .champ-info { flex: 1; }
+
+        .champ-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        .champ-wr {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            color: var(--blue);
+            text-transform: uppercase;
+        }
+
+        /* =============================================
+           FOOTER
+           ============================================= */
+        footer {
+            position: relative;
+            z-index: 1;
+            background: var(--dark-mid);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2.5rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-tagline {
+            font-style: italic;
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+            opacity: 0.7;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .footer-links li a {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links li a:hover { color: var(--gold); }
+
+        .footer-copy {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        /* =============================================
+           ANIMATIONS
+           ============================================= */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-eyebrow { animation: fadeUp 0.6s ease both; }
+        h1             { animation: fadeUp 0.6s 0.15s ease both; }
+        .hero-subtitle { animation: fadeUp 0.6s 0.28s ease both; }
+        .rank-badge    { animation: fadeUp 0.6s 0.4s ease both; }
+
+        /* =============================================
+           EMPHASIS ELEMENTS
+           ============================================= */
+        strong { color: var(--gold-light); font-weight: 600; }
+        em     { color: var(--blue); font-style: italic; }
+
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 900px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+            }
+            aside { position: static; }
+            .topbar { padding: 0.8rem 1.2rem; }
+            nav ul { gap: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================
+         SITE HEADER
+         ======================================== -->
+    <header>
+
+        <!-- Top navigation bar -->
+        <div class="topbar">
+            <a href="#" class="logo">
+                <img src="images/logo.png" 
+                    alt="League of Legends Logo" 
+                    style="height:36px; vertical-align:middle; margin-right:10px;">
+                Rift Chronicles
+            </a>
+            <nav aria-label="Main navigation">
+                <ul>
+                    <li><a href="#posts">Posts</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#champions">Champions</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Hero banner -->
+        <div class="hero">
+            <p class="hero-eyebrow">SEA Server · Runeterra's Edge</p>
+            <h1>Ls1and's<br>Rift Chronicles</h1>
+            <p class="hero-subtitle">
+                A summoner's journal from the battlefields of the Southeast Asian server — 
+                <em>thoughts, strategies, and stories</em> from the Rift.
+            </p>
+            <div class="rank-badge">
+                <span class="rank-dot"></span>
+                Ls1and · #1202 · SEA
+            </div>
+        </div>
+
+    </header>
+
+    <!-- ========================================
+         MAIN PAGE CONTENT + SIDEBAR
+         ======================================== -->
+    <div class="page-wrapper">
+
+        <!-- ====== MAIN CONTENT AREA ====== -->
+        <main id="posts" aria-label="Blog posts">
+
+            <p class="section-title">Latest Posts</p>
+
+            <!-- ---- ARTICLE 1: Featured Post ---- -->
+            <article>
+                <div class="article-img">
+                    <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Orianna_0.jpg" alt="Orianna, The Lady of Clockwork — champion splash art" loading="lazy">
+                    <span class="article-tag">Strategy</span>
+                </div>
+                <div class="article-body">
+                    <div class="article-meta">
+                        <time datetime="2026-05-15">May 15, 2026</time>
+                        <span class="sep"></span>
+                        <span class="author">Ls1and</span>
+                    </div>
+                    <h2><a href="#">Why Macro Play Matters More Than Mechanics in Platinum+</a></h2>
+                    <p class="article-excerpt">
+                        After grinding through <strong>Gold</strong> last split, I hit 
+                        Platinum for the first time on SEA — and the biggest lesson wasn't about 
+                        landing skill shots. It was about reading the map. Here's what changed:
+                    </p>
+                    <blockquote>
+                        <strong>"The best play is often the one you don't make."</strong> — Every 
+                        time I recalled instead of chasing that kill, I probably saved the game.
+                    </blockquote>
+                    <p class="article-excerpt">
+                        Wave management, objective priority, and knowing when to <em>not</em> fight 
+                        are the invisible skills that separate hardstuck from climbing. In this post, 
+                        I break down three key macro habits I developed from reviewing my own VODs.
+                    </p>
+                    <a href="#" class="read-more">Read Full Post</a>
+                </div>
+            </article>
+
+            <!-- ---- ARTICLE 2 ---- -->
+            <article>
+                <div class="article-img">
+                    <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Syndra_0.jpg" alt="Syndra, The Dark Sovereign — champion splash art" loading="lazy">
+                    <span class="article-tag">Champion Guide</span>
+                </div>
+                <div class="article-body">
+                    <div class="article-meta">
+                        <time datetime="2026-05-08">May 8, 2026</time>
+                        <span class="sep"></span>
+                        <span class="author">Ls1and</span>
+                    </div>
+                    <h2><a href="#">My Thoughts on the Season 2026 Mid-Split Patch Changes</a></h2>
+                    <p class="article-excerpt">
+                        The latest patch shook up the jungle and support meta significantly. 
+                        <strong>Objective bounties</strong> got reworked again, and several 
+                        champions I've been playing — including my favourite mid-laners — 
+                        received adjustments that completely change their power curves.
+                    </p>
+                    <p class="article-excerpt">
+                        I've been testing on the SEA server for a week now, and here's my honest 
+                        take on what's worth picking up and what to avoid in solo queue right now.
+                    </p>
+                    <a href="#" class="read-more">Read Full Post</a>
+                </div>
+            </article>
+
+            <!-- ---- ARTICLE 3 ---- -->
+            <article>
+                <div class="article-img">
+                    <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lissandra_0.jpg" alt="Lissandra, The Ice Witch — champion splash art" loading="lazy">
+                    <span class="article-tag">Reflection</span>
+                </div>
+                <div class="article-body">
+                    <div class="article-meta">
+                        <time datetime="2026-04-28">April 28, 2026</time>
+                        <span class="sep"></span>
+                        <span class="author">Ls1and</span>
+                    </div>
+                    <h2><a href="#">How I Climbed 200 LP in Two Weeks — Without Playing More</a></h2>
+                    <p class="article-excerpt">
+                        Contrary to the grind-more advice you see everywhere, my biggest LP gains 
+                        came from playing <em>fewer</em> games but with much higher intentionality. 
+                        I capped myself at 5 games a day, tracked my mental state before each 
+                        session, and only queued when I felt <strong>focused and calm</strong>.
+                    </p>
+                    <p class="article-excerpt">
+                        Tilt is invisible. You don't always know it's happening — but your 
+                        winrate does. Here's the system I built to stay out of it.
+                    </p>
+                    <a href="#" class="read-more">Read Full Post</a>
+                </div>
+            </article>
+
+        </main>
+
+        <!-- ====== SIDEBAR ====== -->
+        <aside id="about" aria-label="Sidebar with additional information">
+
+            <!-- About Section -->
+            <section class="sidebar-section">
+                <h3>About Me</h3>
+                <div class="about-avatar" style="overflow:hidden;padding:0;">
+                    <img src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4895.png" alt="Summoner profile icon for Ls1and" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                </div>
+                <p class="about-name">Ls1and</p>
+                <p class="about-rank">SEA · #1202 · Platinum</p>
+                <p class="about-bio">
+                    A <strong>SEA server</strong> summoner who's been playing since Season 6. 
+                    I main <em>mid lane</em> and write about climbing, champion strategy, and 
+                    the mental side of solo queue. Find my stats on 
+                    <a href="https://op.gg/lol/summoners/sea/Ls1and-1202" style="color:var(--blue);text-decoration:none;" target="_blank" rel="noopener">op.gg</a>.
+                </p>
+                <!-- Summoner stats grid -->
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-value">Platinum II</span>
+                        <span class="stat-label">Current Rank</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">SEA</span>
+                        <span class="stat-label">Server</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">Mid</span>
+                        <span class="stat-label">Main Role</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">#1202</span>
+                        <span class="stat-label">Tag</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Champion Favourites -->
+            <section class="sidebar-section" id="champions">
+                <h3>Favourite Champions</h3>
+                <div class="champ-card">
+                    <div class="champ-icon"><img src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Orianna.png" alt="Orianna champion icon" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+                    <div class="champ-info">
+                        <div class="champ-name">Orianna</div>
+                        <div class="champ-wr">High WR · Control Mage</div>
+                    </div>
+                </div>
+                <div class="champ-card">
+                    <div class="champ-icon"><img src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zed.png" alt="Zed champion icon" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+                    <div class="champ-info">
+                        <div class="champ-name">Zed</div>
+                        <div class="champ-wr">Assassin · Carry</div>
+                    </div>
+                </div>
+                <div class="champ-card">
+                    <div class="champ-icon"><img src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Syndra.png" alt="Syndra champion icon" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+                    <div class="champ-info">
+                        <div class="champ-name">Syndra</div>
+                        <div class="champ-wr">Burst Mage · Solo Carry</div>
+                    </div>
+                </div>
+                <div class="champ-card">
+                    <div class="champ-icon"><img src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lissandra.png" alt="Lissandra champion icon" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+                    <div class="champ-info">
+                        <div class="champ-name">Lissandra</div>
+                        <div class="champ-wr">Utility Mage · Roam</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Posts -->
+            <section class="sidebar-section">
+                <h3>Recent Posts</h3>
+                <ul class="recent-list">
+                    <li>
+                        <a href="#">Why Macro Play Matters More Than Mechanics</a>
+                        <time datetime="2026-05-15">May 15, 2026</time>
+                    </li>
+                    <li>
+                        <a href="#">Mid-Split Patch 2026 Breakdown</a>
+                        <time datetime="2026-05-08">May 8, 2026</time>
+                    </li>
+                    <li>
+                        <a href="#">Climbing 200 LP Without Playing More</a>
+                        <time datetime="2026-04-28">April 28, 2026</time>
+                    </li>
+                    <li>
+                        <a href="#">The Curse of Hardstuck — A Personal Story</a>
+                        <time datetime="2026-04-14">April 14, 2026</time>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Categories -->
+            <section class="sidebar-section">
+                <h3>Categories</h3>
+                <div class="categories">
+                    <a href="#" class="cat-tag">Strategy</a>
+                    <a href="#" class="cat-tag">Champion Guides</a>
+                    <a href="#" class="cat-tag">Patch Notes</a>
+                    <a href="#" class="cat-tag">Mental Game</a>
+                    <a href="#" class="cat-tag">Climbing</a>
+                    <a href="#" class="cat-tag">Lore</a>
+                    <a href="#" class="cat-tag">Esports</a>
+                </div>
+            </section>
+
+        </aside>
+
+    </div><!-- end .page-wrapper -->
+
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <footer id="contact">
+        <div class="divider" style="max-width:400px;margin:0 auto 2rem;">
+            <div class="divider-gem"></div>
+        </div>
+        <p class="footer-logo">Rift Chronicles</p>
+        <p class="footer-tagline">By Ls1and · SEA · <em>The Rift never sleeps.</em></p>
+        <ul class="footer-links">
+            <li><a href="https://op.gg/lol/summoners/sea/Ls1and-1202" target="_blank" rel="noopener">OP.GG Profile</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <p class="footer-copy">&copy; 2026 Ls1and's Rift Chronicles · All rights reserved</p>
+    </footer>
+
+</body>
+</html>
